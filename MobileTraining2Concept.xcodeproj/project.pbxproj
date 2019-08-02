@@ -7,14 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B240EC0722F413B50057548A /* BuilderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B240EC0622F413B50057548A /* BuilderViewController.swift */; };
+		B240EC0922F420860057548A /* target.png in Resources */ = {isa = PBXBuildFile; fileRef = B240EC0822F420860057548A /* target.png */; };
 		B2A8E59E22F2D9F700365603 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A8E59D22F2D9F700365603 /* AppDelegate.swift */; };
 		B2A8E5A022F2D9F700365603 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = B2A8E59F22F2D9F700365603 /* art.scnassets */; };
-		B2A8E5A222F2D9F700365603 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A8E5A122F2D9F700365603 /* ViewController.swift */; };
+		B2A8E5A222F2D9F700365603 /* DroneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A8E5A122F2D9F700365603 /* DroneViewController.swift */; };
 		B2A8E5A522F2D9F800365603 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B2A8E5A322F2D9F800365603 /* Main.storyboard */; };
 		B2A8E5A722F2D9FB00365603 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B2A8E5A622F2D9FB00365603 /* Assets.xcassets */; };
 		B2A8E5AA22F2D9FB00365603 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B2A8E5A822F2D9FB00365603 /* LaunchScreen.storyboard */; };
 		B2A8E5B522F2D9FB00365603 /* MobileTraining2ConceptTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A8E5B422F2D9FB00365603 /* MobileTraining2ConceptTests.swift */; };
 		B2A8E5C022F2D9FB00365603 /* MobileTraining2ConceptUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A8E5BF22F2D9FB00365603 /* MobileTraining2ConceptUITests.swift */; };
+		B2A8E5CE22F2EBFB00365603 /* JoystickView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A8E5CD22F2EBFB00365603 /* JoystickView.swift */; };
+		B2B7680B22F333C40098D8C9 /* PlaneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2B7680A22F333C40098D8C9 /* PlaneViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,10 +39,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		B240EC0622F413B50057548A /* BuilderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BuilderViewController.swift; sourceTree = "<group>"; };
+		B240EC0822F420860057548A /* target.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = target.png; sourceTree = "<group>"; };
 		B2A8E59A22F2D9F700365603 /* MobileTraining2Concept.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MobileTraining2Concept.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2A8E59D22F2D9F700365603 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B2A8E59F22F2D9F700365603 /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
-		B2A8E5A122F2D9F700365603 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		B2A8E5A122F2D9F700365603 /* DroneViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DroneViewController.swift; sourceTree = "<group>"; };
 		B2A8E5A422F2D9F800365603 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		B2A8E5A622F2D9FB00365603 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B2A8E5A922F2D9FB00365603 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -49,6 +55,8 @@
 		B2A8E5BB22F2D9FB00365603 /* MobileTraining2ConceptUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MobileTraining2ConceptUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2A8E5BF22F2D9FB00365603 /* MobileTraining2ConceptUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileTraining2ConceptUITests.swift; sourceTree = "<group>"; };
 		B2A8E5C122F2D9FB00365603 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B2A8E5CD22F2EBFB00365603 /* JoystickView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoystickView.swift; sourceTree = "<group>"; };
+		B2B7680A22F333C40098D8C9 /* PlaneViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PlaneViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,10 +109,14 @@
 			children = (
 				B2A8E59D22F2D9F700365603 /* AppDelegate.swift */,
 				B2A8E59F22F2D9F700365603 /* art.scnassets */,
-				B2A8E5A122F2D9F700365603 /* ViewController.swift */,
+				B2A8E5A122F2D9F700365603 /* DroneViewController.swift */,
+				B2B7680A22F333C40098D8C9 /* PlaneViewController.swift */,
+				B240EC0622F413B50057548A /* BuilderViewController.swift */,
+				B2A8E5CD22F2EBFB00365603 /* JoystickView.swift */,
 				B2A8E5A322F2D9F800365603 /* Main.storyboard */,
 				B2A8E5A622F2D9FB00365603 /* Assets.xcassets */,
 				B2A8E5A822F2D9FB00365603 /* LaunchScreen.storyboard */,
+				B240EC0822F420860057548A /* target.png */,
 				B2A8E5AB22F2D9FB00365603 /* Info.plist */,
 			);
 			path = MobileTraining2Concept;
@@ -236,6 +248,7 @@
 				B2A8E5AA22F2D9FB00365603 /* LaunchScreen.storyboard in Resources */,
 				B2A8E5A722F2D9FB00365603 /* Assets.xcassets in Resources */,
 				B2A8E5A522F2D9F800365603 /* Main.storyboard in Resources */,
+				B240EC0922F420860057548A /* target.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -260,8 +273,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B2A8E5A222F2D9F700365603 /* ViewController.swift in Sources */,
+				B240EC0722F413B50057548A /* BuilderViewController.swift in Sources */,
+				B2A8E5A222F2D9F700365603 /* DroneViewController.swift in Sources */,
 				B2A8E59E22F2D9F700365603 /* AppDelegate.swift in Sources */,
+				B2A8E5CE22F2EBFB00365603 /* JoystickView.swift in Sources */,
+				B2B7680B22F333C40098D8C9 /* PlaneViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -367,7 +383,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -422,7 +438,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
