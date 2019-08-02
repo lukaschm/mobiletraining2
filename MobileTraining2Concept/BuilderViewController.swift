@@ -15,18 +15,29 @@ class BuilderViewController: UIViewController, ARSCNViewDelegate {
     @IBOutlet var sceneView: ARSCNView!
     @IBOutlet weak var joystickLeft: JoystickView!
     @IBOutlet weak var joystickRight: JoystickView!
-    
+    @IBOutlet weak var placeItemButton: UIButton!
+
     var shipNode: SCNNode!
     
-    var heldObjectNode: SCNNode?
+    var heldObjectNode: SCNNode? {
+        didSet {
+            updatePlaceItemButtonDescription()
+        }
+    }
     
-    var targetedNode: SCNNode?
+    var targetedNode: SCNNode? {
+        didSet {
+            updatePlaceItemButtonDescription()
+        }
+    }
     var oldTargetMaterial: Any?
     
     var timer: Timer!
     
     var updateTimeInterval = 1.0 / 30.0
     
+    // We need this here so we can use it during rendering.
+    // Directly using sceneView.bounds.center is not allowed from a background thread.
     var sceneCenter: CGPoint!
     
     override func viewDidLoad() {
@@ -46,6 +57,8 @@ class BuilderViewController: UIViewController, ARSCNViewDelegate {
         sceneView.scene.physicsWorld.gravity = SCNVector3(0, 0, 0)
         // sceneView.debugOptions = [.showFeaturePoints, .showWorldOrigin]
         sceneView.showsStatistics = false
+        
+        updatePlaceItemButtonDescription()
         
         addLight()
     }
@@ -130,7 +143,7 @@ class BuilderViewController: UIViewController, ARSCNViewDelegate {
     @IBAction func placeItemButtonPressed(_ sender: Any) {
         
         if let heldObjectNode = heldObjectNode {
-            // Place Item if we have one
+            // Place Item if we have one.
             let heldObjectPosition = heldObjectNode.worldTransform
             heldObjectNode.transform = heldObjectPosition
             heldObjectNode.removeFromParentNode()
@@ -138,6 +151,7 @@ class BuilderViewController: UIViewController, ARSCNViewDelegate {
             sceneView.scene.rootNode.addChildNode(heldObjectNode)
             self.heldObjectNode = nil
         } else {
+            // Pick up Item if we don't hold one currently.
             if let targetedNode = targetedNode {
                 self.heldObjectNode = targetedNode
                 targetedNode.transform = sceneView.pointOfView!.convertTransform(targetedNode.transform, from: sceneView.scene.rootNode)
@@ -155,6 +169,19 @@ class BuilderViewController: UIViewController, ARSCNViewDelegate {
         lightNode.light!.type = .omni
         sceneView.scene.rootNode.addChildNode(lightNode)
     }
+    
+    func updatePlaceItemButtonDescription(){
+        DispatchQueue.main.async {
+            self.placeItemButton.isEnabled = true
+            if self.heldObjectNode != nil {
+                self.placeItemButton.setTitle("Place Item", for: .normal)
+            } else if self.targetedNode != nil {
+                self.placeItemButton.setTitle("Pick Item", for: .normal)
+            } else {
+                self.placeItemButton.isEnabled = false
+            }
+        }
+    }
 }
 
 extension BuilderViewController {
@@ -169,6 +196,8 @@ extension BuilderViewController {
                 self.oldTargetMaterial = self.targetedNode!.geometry!.firstMaterial!.diffuse.contents
             }
             self.targetedNode!.geometry!.firstMaterial!.diffuse.contents = UIColor.red
+        } else {
+            targetedNode = nil
         }
     }
     

@@ -187,6 +187,7 @@
                     <connections>
                         <outlet property="joystickLeft" destination="Zud-ae-Hw8" id="f7Q-GW-uZf"/>
                         <outlet property="joystickRight" destination="aXh-Vh-2aw" id="WgW-0K-Yox"/>
+                        <outlet property="placeItemButton" destination="gUW-Ii-d73" id="VRo-Fp-dmj"/>
                         <outlet property="sceneView" destination="8kJ-B1-4LZ" id="4Ya-gD-CKM"/>
                     </connections>
                 </viewController>
