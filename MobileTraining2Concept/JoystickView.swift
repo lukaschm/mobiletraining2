@@ -32,14 +32,6 @@ class JoystickView: UIControl {
         }
     }
 
-    /*
-    // Only override draw() if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func draw(_ rect: CGRect) {
-        // Drawing code
-    }
-    */
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setup()
@@ -102,7 +94,7 @@ extension CGRect {
 }
 
 
-func clamp(vector: (Float, Float), toLength length: Float) -> (Float, Float) {
+private func clamp(vector: (Float, Float), toLength length: Float) -> (Float, Float) {
     let magnitude = sqrt(vector.1 * vector.1 + vector.0 * vector.0)
     let angle = atan2(vector.1, vector.0)
     let newMagnitude = min(magnitude, 1.0)

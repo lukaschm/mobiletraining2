@@ -22,6 +22,8 @@ class DroneViewController: UIViewController, ARSCNViewDelegate {
     
     var updateTimeInterval = 1.0 / 30.0
     
+    var worldNode: SCNNode?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -46,6 +48,14 @@ class DroneViewController: UIViewController, ARSCNViewDelegate {
         timer = Timer.scheduledTimer(withTimeInterval: updateTimeInterval, repeats: true) { (timer) in
             self.moveShip()
         }
+        
+        for viewController in self.tabBarController?.viewControllers ?? [] {
+            if viewController is BuilderViewController {
+                (viewController as? BuilderViewController)?.delegate = self
+            }
+        }
+        
+        addLight()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -112,22 +122,25 @@ class DroneViewController: UIViewController, ARSCNViewDelegate {
     func moveShip(){
         let forceScale: Float = 200 * Float(updateTimeInterval)
         shipNode.physicsBody!.applyTorque(
+            // That's a quarternion (I think - the documentation seems to think
+            // this should be a SCNVector3)
+            // Left joystick right/left controls the turning velocity.
             SCNVector4Make(0, -joystickLeft.value.0, 0, 1.0),
             asImpulse: false)
         
-        
+        // Right joystick right/left controls right-/leftward motion
         let x = joystickRight.value.0 * forceScale
+        // Right joystick up/down controls forward/backward motion
         let z = joystickRight.value.1 * forceScale
+        // Left joystick up/down controls up-/downward motion.
+        let y = -joystickLeft.value.1 * forceScale * 0.5
         
-        let y = -joystickLeft.value.1 * forceScale
-        
+        // We express this force in the local coordinate system of our spaceship,
         let localForce = SCNVector3(x, y, z)
+        // and then transform this to global coordinates before applying it.
         let globalForce = shipNode.presentation.convertVector(localForce, to: sceneView.scene.rootNode)
-        
-        let force = SCNVector3(globalForce.x, globalForce.y * 0.5, globalForce.z)
-        
         shipNode.physicsBody!.applyForce(
-            force,
+            globalForce,
             asImpulse: false)
     }
     
@@ -135,6 +148,15 @@ class DroneViewController: UIViewController, ARSCNViewDelegate {
         shipNode.physicsBody!.clearAllForces()
         shipNode.position = SCNVector3(0, 0, 0)
     }
+    
+    func addLight(){
+        let lightNode = SCNNode()
+        lightNode.position = SCNVector3(0, 10, 0)
+        lightNode.light = SCNLight()
+        lightNode.light!.type = .omni
+        sceneView.scene.rootNode.addChildNode(lightNode)
+    }
+    
 }
 
 extension DroneViewController {
@@ -144,5 +166,23 @@ extension DroneViewController {
         bloomFilter.setValue(30.0, forKey: "inputRadius")
         
         return [bloomFilter]
+    }
+}
+
+extension DroneViewController : BuilderDelegate {
+    func builderAdded(buildNode: SCNNode) {
+        print("Builder added worldnode!")
+        self.worldNode = buildNode.flattenedClone()
+        if let worldNode = worldNode {
+            self.sceneView.scene.rootNode.addChildNode(worldNode)
+        }
+    }
+    
+    func builderChanged(buildNode: SCNNode) {
+        self.worldNode?.removeFromParentNode()
+        self.worldNode = buildNode.flattenedClone()
+        if let worldNode = worldNode {
+            self.sceneView.scene.rootNode.addChildNode(worldNode)
+        }
     }
 }

@@ -10,6 +10,12 @@ import UIKit
 import SceneKit
 import ARKit
 
+
+protocol BuilderDelegate {
+    func builderAdded(buildNode: SCNNode)
+    func builderChanged(buildNode: SCNNode)
+}
+
 class BuilderViewController: UIViewController, ARSCNViewDelegate {
 
     @IBOutlet var sceneView: ARSCNView!
@@ -18,6 +24,10 @@ class BuilderViewController: UIViewController, ARSCNViewDelegate {
     @IBOutlet weak var placeItemButton: UIButton!
 
     var shipNode: SCNNode!
+    
+    /// This is the node that we add all objects to, so we
+    /// can just add this node to another scene to get our own level.
+    var worldNode: SCNNode!
     
     var heldObjectNode: SCNNode? {
         didSet {
@@ -40,6 +50,8 @@ class BuilderViewController: UIViewController, ARSCNViewDelegate {
     // Directly using sceneView.bounds.center is not allowed from a background thread.
     var sceneCenter: CGPoint!
     
+    var delegate: BuilderDelegate?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -59,6 +71,10 @@ class BuilderViewController: UIViewController, ARSCNViewDelegate {
         sceneView.showsStatistics = false
         
         updatePlaceItemButtonDescription()
+        
+        worldNode = SCNNode()
+        sceneView.scene.rootNode.addChildNode(worldNode)
+        delegate?.builderAdded(buildNode: worldNode)
         
         addLight()
     }
@@ -148,13 +164,14 @@ class BuilderViewController: UIViewController, ARSCNViewDelegate {
             heldObjectNode.transform = heldObjectPosition
             heldObjectNode.removeFromParentNode()
             heldObjectNode.geometry!.firstMaterial!.diffuse.contents = UIColor.white
-            sceneView.scene.rootNode.addChildNode(heldObjectNode)
+            worldNode.addChildNode(heldObjectNode)
+            delegate?.builderChanged(buildNode: worldNode)
             self.heldObjectNode = nil
         } else {
             // Pick up Item if we don't hold one currently.
             if let targetedNode = targetedNode {
                 self.heldObjectNode = targetedNode
-                targetedNode.transform = sceneView.pointOfView!.convertTransform(targetedNode.transform, from: sceneView.scene.rootNode)
+                targetedNode.transform = sceneView.pointOfView!.convertTransform(targetedNode.transform, from: worldNode)
                 targetedNode.removeFromParentNode()
                 sceneView.pointOfView!.addChildNode(targetedNode)
             }
