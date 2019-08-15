@@ -24,6 +24,8 @@ class DroneViewController: UIViewController, ARSCNViewDelegate {
     
     var worldNode: SCNNode?
     
+    // MARK: - Lifecycle and Setup
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -63,6 +65,7 @@ class DroneViewController: UIViewController, ARSCNViewDelegate {
         
         // Create a session configuration
         let configuration = ARWorldTrackingConfiguration()
+        configuration.planeDetection = [.horizontal]
 
         // Run the view's session
         sceneView.session.run(configuration)
@@ -74,32 +77,6 @@ class DroneViewController: UIViewController, ARSCNViewDelegate {
         // Pause the view's session
         sceneView.session.pause()
     }
-
-    // MARK: - ARSCNViewDelegate
-    
-/*
-    // Override to create and configure nodes for anchors added to the view's session.
-    func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
-        let node = SCNNode()
-     
-        return node
-    }
-*/
-    
-    func session(_ session: ARSession, didFailWithError error: Error) {
-        // Present an error message to the user
-        
-    }
-    
-    func sessionWasInterrupted(_ session: ARSession) {
-        // Inform the user that the session has been interrupted, for example, by presenting an overlay
-        
-    }
-    
-    func sessionInterruptionEnded(_ session: ARSession) {
-        // Reset tracking and/or remove existing anchors if consistent tracking is required
-        
-    }
     
     func findAndAdjustShip(){
         shipNode = sceneView.scene.rootNode.childNode(withName: "ship", recursively: false)
@@ -110,6 +87,10 @@ class DroneViewController: UIViewController, ARSCNViewDelegate {
         shipNode.childNodes.first!.eulerAngles.y = .pi
         shipNode.childNodes.first!.scale = SCNVector3(0.01, 0.01, 0.01)
     }
+
+
+    
+    // MARK: - Actions
     
     @IBAction func joystickLeftMoved(_ sender: Any) {
         //moveShip()
@@ -118,6 +99,13 @@ class DroneViewController: UIViewController, ARSCNViewDelegate {
     @IBAction func joystickRightMoved(_ sender: Any) {
         // moveShip()
     }
+    
+    @IBAction func resetButtonPressed(_ sender: Any) {
+        shipNode.physicsBody!.clearAllForces()
+        shipNode.position = SCNVector3(0, 0, 0)
+    }
+    
+    // MARK: - Ship interaction
     
     func moveShip(){
         let forceScale: Float = 200 * Float(updateTimeInterval)
@@ -143,31 +131,11 @@ class DroneViewController: UIViewController, ARSCNViewDelegate {
             globalForce,
             asImpulse: false)
     }
-    
-    @IBAction func resetButtonPressed(_ sender: Any) {
-        shipNode.physicsBody!.clearAllForces()
-        shipNode.position = SCNVector3(0, 0, 0)
-    }
-    
-    func addLight(){
-        let lightNode = SCNNode()
-        lightNode.position = SCNVector3(0, 10, 0)
-        lightNode.light = SCNLight()
-        lightNode.light!.type = .omni
-        sceneView.scene.rootNode.addChildNode(lightNode)
-    }
-    
 }
 
-extension DroneViewController {
-    func getBloomFilter() -> [CIFilter]? {
-        let bloomFilter = CIFilter(name:"CIBloom")!
-        bloomFilter.setValue(10.0, forKey: "inputIntensity")
-        bloomFilter.setValue(30.0, forKey: "inputRadius")
-        
-        return [bloomFilter]
-    }
-}
+
+
+// MARK: - Builder Interaction
 
 extension DroneViewController : BuilderDelegate {
     func builderAdded(buildNode: SCNNode) {
@@ -179,10 +147,109 @@ extension DroneViewController : BuilderDelegate {
     }
     
     func builderChanged(buildNode: SCNNode) {
+        // HACK: This is probably wrong; iOS complains that one scene is modified within a rendering callback of another scene.
         self.worldNode?.removeFromParentNode()
         self.worldNode = buildNode.flattenedClone()
         if let worldNode = worldNode {
             self.sceneView.scene.rootNode.addChildNode(worldNode)
         }
+    }
+}
+
+// MARK: - Plane Detection
+
+extension DroneViewController {
+    
+    func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
+        guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
+        
+        let width = CGFloat(planeAnchor.extent.x)
+        let height = CGFloat(planeAnchor.extent.z)
+        let plane = SCNPlane(width: width, height: height)
+        
+        plane.materials.first?.diffuse.contents = UIColor.white.withAlphaComponent(0.5)
+        
+        var planeNode = SCNNode(geometry: plane)
+        
+        planeNode.position = SCNVector3(planeAnchor.center)
+        planeNode.eulerAngles.x = -.pi / 2
+        
+        update(&planeNode, withGeometry: plane, type: .static)
+        
+        node.addChildNode(planeNode)
+    }
+    
+    func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
+        guard let planeAnchor = anchor as?  ARPlaneAnchor,
+            var planeNode = node.childNodes.first,
+            let plane = planeNode.geometry as? SCNPlane
+            else { return }
+        
+        let width = CGFloat(planeAnchor.extent.x)
+        let height = CGFloat(planeAnchor.extent.z)
+        plane.width = width
+        plane.height = height
+        
+        planeNode.position = SCNVector3(planeAnchor.center)
+        
+        update(&planeNode, withGeometry: plane, type: .static)
+    }
+    
+    
+    func update(_ node: inout SCNNode, withGeometry geometry: SCNGeometry, type: SCNPhysicsBodyType) {
+        // This adds physics bodies to planes, to enable collisions with the environment.
+        // It's not active because the plane detection is not really reliable enough.
+        // let shape = SCNPhysicsShape(geometry: geometry, options: nil)
+        // let physicsBody = SCNPhysicsBody(type: type, shape: shape)
+        // node.physicsBody = physicsBody
+    }
+}
+
+
+// MARK: - Utilities
+
+extension DroneViewController {
+    func addLight(){
+        let lightNode = SCNNode()
+        lightNode.position = SCNVector3(0, 10, 0)
+        lightNode.light = SCNLight()
+        lightNode.light!.type = .omni
+        sceneView.scene.rootNode.addChildNode(lightNode)
+    }
+    
+    func getBloomFilter() -> [CIFilter]? {
+        let bloomFilter = CIFilter(name:"CIBloom")!
+        bloomFilter.setValue(10.0, forKey: "inputIntensity")
+        bloomFilter.setValue(30.0, forKey: "inputRadius")
+        
+        return [bloomFilter]
+    }
+}
+
+// MARK: - ARSCNViewDelegate
+
+extension DroneViewController {
+    /*
+     // Override to create and configure nodes for anchors added to the view's session.
+     func renderer(_ renderer: SCNSceneRenderer, nodeFor anchor: ARAnchor) -> SCNNode? {
+     let node = SCNNode()
+     
+     return node
+     }
+     */
+    
+    func session(_ session: ARSession, didFailWithError error: Error) {
+        // Present an error message to the user
+        
+    }
+    
+    func sessionWasInterrupted(_ session: ARSession) {
+        // Inform the user that the session has been interrupted, for example, by presenting an overlay
+        
+    }
+    
+    func sessionInterruptionEnded(_ session: ARSession) {
+        // Reset tracking and/or remove existing anchors if consistent tracking is required
+        
     }
 }
