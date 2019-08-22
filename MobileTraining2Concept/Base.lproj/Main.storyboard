@@ -103,22 +103,6 @@
                             <arscnView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8kJ-B1-4LZ">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="813"/>
                             </arscnView>
-                            <view hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Zud-ae-Hw8" customClass="JoystickView" customModule="MobileTraining2Concept" customModuleProvider="target">
-                                <rect key="frame" x="16" y="641" width="156" height="156"/>
-                                <connections>
-                                    <action selector="joystickLeftMoved:" destination="F8X-iU-IYj" eventType="valueChanged" id="Kac-dG-eDP"/>
-                                </connections>
-                            </view>
-                            <view hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="aXh-Vh-2aw" customClass="JoystickView" customModule="MobileTraining2Concept" customModuleProvider="target">
-                                <rect key="frame" x="242" y="641" width="156" height="156"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="aXh-Vh-2aw" secondAttribute="height" multiplier="1:1" id="WMk-4M-4jp"/>
-                                    <constraint firstAttribute="width" constant="156" id="YC9-Yi-ZhM"/>
-                                </constraints>
-                                <connections>
-                                    <action selector="joystickRightMoved:" destination="F8X-iU-IYj" eventType="valueChanged" id="Tw1-DK-UrA"/>
-                                </connections>
-                            </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OPw-lG-fVs">
                                 <rect key="frame" x="187.5" y="44" width="39" height="30"/>
                                 <state key="normal" title="Reset">
@@ -164,29 +148,21 @@
                         <constraints>
                             <constraint firstItem="8kJ-B1-4LZ" firstAttribute="top" secondItem="N0I-KU-DqL" secondAttribute="top" id="6rk-Ss-ZRK"/>
                             <constraint firstItem="gUW-Ii-d73" firstAttribute="centerX" secondItem="8kJ-B1-4LZ" secondAttribute="centerX" id="882-iI-hgf"/>
-                            <constraint firstItem="Zud-ae-Hw8" firstAttribute="width" secondItem="aXh-Vh-2aw" secondAttribute="width" id="8Bj-ZU-ItB"/>
                             <constraint firstItem="OPw-lG-fVs" firstAttribute="top" secondItem="vt2-Z4-JDM" secondAttribute="top" id="8S1-Rf-JSS"/>
-                            <constraint firstItem="vt2-Z4-JDM" firstAttribute="trailing" secondItem="aXh-Vh-2aw" secondAttribute="trailing" constant="16" id="E22-ed-hrf"/>
                             <constraint firstItem="OPw-lG-fVs" firstAttribute="centerX" secondItem="8kJ-B1-4LZ" secondAttribute="centerX" id="Oa2-Fb-TvH"/>
-                            <constraint firstItem="Zud-ae-Hw8" firstAttribute="leading" secondItem="vt2-Z4-JDM" secondAttribute="leading" constant="16" id="RTX-D5-npa"/>
-                            <constraint firstItem="vt2-Z4-JDM" firstAttribute="bottom" secondItem="Zud-ae-Hw8" secondAttribute="bottom" constant="16" id="UG5-XA-LeD"/>
                             <constraint firstItem="8bS-UV-vRS" firstAttribute="centerY" secondItem="8kJ-B1-4LZ" secondAttribute="centerY" id="VJf-Vt-uhj"/>
                             <constraint firstItem="vt2-Z4-JDM" firstAttribute="bottom" secondItem="gUW-Ii-d73" secondAttribute="bottom" constant="16" id="Xvi-a3-KV4"/>
                             <constraint firstItem="8kJ-B1-4LZ" firstAttribute="leading" secondItem="vt2-Z4-JDM" secondAttribute="leading" id="aGi-ls-Da9"/>
                             <constraint firstItem="8kJ-B1-4LZ" firstAttribute="trailing" secondItem="vt2-Z4-JDM" secondAttribute="trailing" id="euv-2t-SFc"/>
-                            <constraint firstItem="vt2-Z4-JDM" firstAttribute="bottom" secondItem="aXh-Vh-2aw" secondAttribute="bottom" constant="16" id="pir-DO-86N"/>
                             <constraint firstItem="QFY-Eb-7gC" firstAttribute="top" secondItem="vt2-Z4-JDM" secondAttribute="top" id="q5d-ma-Y7L"/>
                             <constraint firstItem="8kJ-B1-4LZ" firstAttribute="bottom" secondItem="vt2-Z4-JDM" secondAttribute="bottom" id="smZ-Jy-j7J"/>
                             <constraint firstItem="8bS-UV-vRS" firstAttribute="centerX" secondItem="8kJ-B1-4LZ" secondAttribute="centerX" id="tBR-7N-Y6g"/>
                             <constraint firstItem="vt2-Z4-JDM" firstAttribute="trailing" secondItem="QFY-Eb-7gC" secondAttribute="trailing" constant="16" id="ukf-eW-jhQ"/>
-                            <constraint firstItem="Zud-ae-Hw8" firstAttribute="height" secondItem="aXh-Vh-2aw" secondAttribute="height" id="zZh-1u-GaD"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="vt2-Z4-JDM"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="Builder" id="Uqq-Ch-YQE"/>
                     <connections>
-                        <outlet property="joystickLeft" destination="Zud-ae-Hw8" id="f7Q-GW-uZf"/>
-                        <outlet property="joystickRight" destination="aXh-Vh-2aw" id="WgW-0K-Yox"/>
                         <outlet property="placeItemButton" destination="gUW-Ii-d73" id="VRo-Fp-dmj"/>
                         <outlet property="sceneView" destination="8kJ-B1-4LZ" id="4Ya-gD-CKM"/>
                     </connections>

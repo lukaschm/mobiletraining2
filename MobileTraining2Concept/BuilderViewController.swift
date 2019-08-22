@@ -19,8 +19,6 @@ protocol BuilderDelegate {
 class BuilderViewController: UIViewController, ARSCNViewDelegate {
 
     @IBOutlet var sceneView: ARSCNView!
-    @IBOutlet weak var joystickLeft: JoystickView!
-    @IBOutlet weak var joystickRight: JoystickView!
     @IBOutlet weak var placeItemButton: UIButton!
 
     var shipNode: SCNNode!
@@ -29,22 +27,22 @@ class BuilderViewController: UIViewController, ARSCNViewDelegate {
     /// can just add this node to another scene to get our own level.
     var worldNode: SCNNode!
     
+    /// This stores a reference to the node we currently hold.
     var heldObjectNode: SCNNode? {
         didSet {
             updatePlaceItemButtonDescription()
         }
     }
     
+    /// This is a reference to the node that is currently targeted.
     var targetedNode: SCNNode? {
         didSet {
             updatePlaceItemButtonDescription()
         }
     }
+    /// We need to keep this to restore the appearance of any node to its
+    /// previous state.
     var oldTargetMaterial: Any?
-    
-    var timer: Timer!
-    
-    var updateTimeInterval = 1.0 / 30.0
     
     // We need this here so we can use it during rendering.
     // Directly using sceneView.bounds.center is not allowed from a background thread.
@@ -128,14 +126,6 @@ class BuilderViewController: UIViewController, ARSCNViewDelegate {
         
     }
     
-    @IBAction func joystickLeftMoved(_ sender: Any) {
-        //moveShip()
-    }
-    
-    @IBAction func joystickRightMoved(_ sender: Any) {
-        // moveShip()
-    }
-    
     @IBAction func resetButtonPressed(_ sender: Any) {
         shipNode.physicsBody!.clearAllForces()
         shipNode.position = SCNVector3(0, 0, 0)
@@ -159,7 +149,7 @@ class BuilderViewController: UIViewController, ARSCNViewDelegate {
     @IBAction func placeItemButtonPressed(_ sender: Any) {
         
         if let heldObjectNode = heldObjectNode {
-            // Place Item if we have one.
+            // Place node if we have one.
             let heldObjectPosition = heldObjectNode.worldTransform
             heldObjectNode.transform = heldObjectPosition
             heldObjectNode.removeFromParentNode()
@@ -168,7 +158,7 @@ class BuilderViewController: UIViewController, ARSCNViewDelegate {
             delegate?.builderChanged(buildNode: worldNode)
             self.heldObjectNode = nil
         } else {
-            // Pick up Item if we don't hold one currently.
+            // Pick up a node if we don't hold one currently.
             if let targetedNode = targetedNode {
                 self.heldObjectNode = targetedNode
                 targetedNode.transform = sceneView.pointOfView!.convertTransform(targetedNode.transform, from: worldNode)
@@ -216,49 +206,5 @@ extension BuilderViewController {
         } else {
             targetedNode = nil
         }
-    }
-    
-    // MARK: - Plane detection
-    
-    func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
-        guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
-        
-        let width = CGFloat(planeAnchor.extent.x)
-        let height = CGFloat(planeAnchor.extent.z)
-        let plane = SCNPlane(width: width, height: height)
-        
-        plane.materials.first?.diffuse.contents = UIColor.white.withAlphaComponent(0.5)
-        
-        var planeNode = SCNNode(geometry: plane)
-        
-        planeNode.position = SCNVector3(planeAnchor.center)
-        planeNode.eulerAngles.x = -.pi / 2
-        
-        update(&planeNode, withGeometry: plane, type: .static)
-        
-        node.addChildNode(planeNode)
-    }
-    
-    func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
-        guard let planeAnchor = anchor as?  ARPlaneAnchor,
-            var planeNode = node.childNodes.first,
-            let plane = planeNode.geometry as? SCNPlane
-            else { return }
-        
-        let width = CGFloat(planeAnchor.extent.x)
-        let height = CGFloat(planeAnchor.extent.z)
-        plane.width = width
-        plane.height = height
-        
-        planeNode.position = SCNVector3(planeAnchor.center)
-        
-        update(&planeNode, withGeometry: plane, type: .static)
-    }
-    
-    
-    func update(_ node: inout SCNNode, withGeometry geometry: SCNGeometry, type: SCNPhysicsBodyType) {
-        let shape = SCNPhysicsShape(geometry: geometry, options: nil)
-        let physicsBody = SCNPhysicsBody(type: type, shape: shape)
-        node.physicsBody = physicsBody
     }
 }

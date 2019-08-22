@@ -71,6 +71,7 @@ class JoystickView: UIControl {
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        // Disable actions to remove the default 0.1s animation for moving the layer.
         CATransaction.begin()
         CATransaction.setDisableActions(true)
         stickShape.position = touches.first!.location(in: self)
@@ -93,7 +94,7 @@ extension CGRect {
     }
 }
 
-
+/// Clamps a vector to have at most the specified length.
 private func clamp(vector: (Float, Float), toLength length: Float) -> (Float, Float) {
     let magnitude = sqrt(vector.1 * vector.1 + vector.0 * vector.0)
     let angle = atan2(vector.1, vector.0)
