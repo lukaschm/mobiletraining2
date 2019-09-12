@@ -1,0 +1,124 @@
+:source-highlighter: rouge
+:source-language: swift
+:imagesdir: ./
+
+= Leitfaden ARKit-Training (Training 2)
+
+== Aufgabe 1: Projekt anlegen & Action ausführen
+
+. Erstelle in Xcode ein neues Swift-Projekt mit dem Namen “iOSRestaurantTableFinder".
+Nutze das _ARKit_-Template. Das generierte Projekt enthält die komplette nötige Projekt-Struktur inklusive Storyboard. Mache dich mit der Struktur des Projekts und den einzelnen Dateien vertraut.
+
+. Öffne `Main.storyboard` und ziehe einen Button von der Library auf den `ViewController`. Ändere die Beschriftung des Buttons auf "Add Object" durch Doppelklick auf den Button.
++
+TIP: Die Library lässt sich mit dem Befehl `cmd+shift+L` öffnen.
++
+NOTE: Eventuell muss für die Platzierung des Buttons das Gerät im Storyboard auf das Gerät geändert werden, das zur Verfügung steht. Klicke dazu auf `View as: iPhone X`, und öffne darunter das entsprechende Gerät durch klicken.
+
+//TODO: Besseres Bild, genauere Beschreibung hier hinzufügen.
+. Erstelle im DetailsViewController per Drag and Drop aus dem Storyboard eine `Action` für den Button.
++
+TIP: Öffne den Assistant-Editor (oben links, das Symbol mit zwei Kreisen). Im linken Fenster sollte sich das Storyboard befinden. Wenn du im Storyboard den ViewController auswählst, sollte sich im rechten Fenster die `ViewController.swift`-Datei öffnen. Drücke dann CTRL, und ziehe vom Button auf den ViewController. Wähle `Action` im sich öffnenden Menü. Benenne anschließend die Action wie gewünscht.
++
+[source]
+----
+@IBAction func addButtonPressed(_ sender: Any){
+    // This is what is executed when tapping on the button.
+}
+----
++
+image::storyboard-outlet.png[]
+
+. In der `addButtonPressed`- Methode in `ViewController.swift`, füge `print("Hello, World!")` hinzu. Starte die App, drücke den Button, und prüfe, ob im Terminal von Xcode "Hello, World!" erscheint.
+
+
+== Aufgabe 2: Nodes zur Szene hinzufügen.
+
+. Wir wollten mit dem Button ein 3D-Objekt zur Szene hinzufügen. Dafür müssen wir einen `SCNNode` erstellen, und ihn in den _Scenegraph_ der `SceneView` einbinden. Ergänze dafür folgende Zeilen in der `addButtonPressed`-Methode:
++
+[source]
+----
+@IBAction func addButtonPressed(_ sender: Any){
+    // Create an empty node.
+    let node = SCNNode() 
+
+    // Attach it to the root of our scene.
+    sceneView.scene.rootNode.addChildNode(node)
+}
+----
+
+. Wenn die App jetzt gestartet wird, verändert sich _nichts sichtbares_ in der Szene - es wurde zwar ein Node hinzugefügt, aber dieser enthält kein 3D-Objekt und wird nicht visuell dargestellt. Um ein Objekt (eine Geometrie) zu erstellen, muss ein `SCNGeometry`-Object erstellt und dem Node beim erstellen als Parameter mitgegeben werden. Ändere die `addButtonPressed`-Methode folgenderweise ab:
++
+[source]
+----
+@IBAction func addButtonPressed(_ sender: Any){
+    // Create a box geometry.
+    let boxGeometry = SCNBox(width: 0.25, height: 0.25, length: 0.25, chamferRadius: 0.01)
+
+    // Create the node using this geometry.
+    let node = SCNNode(geometry: boxGeometry) 
+
+    sceneView.scene.rootNode.addChildNode(node)
+}
+----
+
+. Starte die App, warte kurz, bis das ARKit-Tracking greift, und bewege dann das iPhone Richtung Bildschirm. Es sollte sich nun eine kleine virtuelle Box dort befinden, wo das iPhone das Tracking begonnen hat. Um die Box von Beginn an im sichtbaren Bereich zu platzieren, können wir sie mit dem `position`- Attribut am Node verschieben:
++
+[source]
+----
+@IBAction func addButtonPressed(_ sender: Any){
+    let boxGeometry = SCNBox(width: 0.25, height: 0.25, length: 0.25, chamferRadius: 0.01)
+    let node = SCNNode(geometry: boxGeometry) 
+
+    // Move the node 1.5m forward.
+    node.position = SCNVector3(0, 0, -1.5)
+
+    sceneView.scene.rootNode.addChildNode(node)
+}
+----
++
+NOTE: In ARKit zeigt `x` nach rechts, `y` nach oben, und `z` nach hinten. Wenn wir den Node also in negative z-Richtung bewegen, erscheint vor dem Ursprung (d.h., vor der ursprünglichen Position des iPhone.) 
+
+. Wir wollen nun die Box an eine beliebige Stelle im Raum platzieren. Dafür soll erst der Node so platziert werden, dass er sich mit der Kamera (/mit dem iPhone) bewegt. Das können wir erreichen, indem wir den Node nicht an den `rootNode` der Scene hängen, sondern an die virtuelle Kamera. Ändere die letzte Zeile der `addButtonPressed` auf
++
+[source]
+----
+sceneView.pointOfView!.addChildNode(node)
+----
++
+NOTE: Wird die App jetzt gestartet, wird die Box immer relativ zur Kamera platziert. Mit dem `position`-Attribut kontrollieren wir jetzt die Position relativ zur Kamera.
+
+. Durch Bewegen des Geräts können wir jetzt die Box beliebig im Raum bewegen. Als nächster Schritt soll nun die Box auf einen Button-Click von der Kamera gelöst werden und an der Stelle im Raum festgesetzt werden.
+
+.. Füge einen neuen Button hinzu, wie in Aufgabe 1 beschrieben. Der Button soll mit "Place Item" beschriftet sein und auf eine `placeItemButtonPressed`-Methode verweisen.
+.. In der `addButtonPressed`-Methode, speichere den zuletzt hinzugefügten Knoten in einem neuen Attribut `heldObjectNode: SCNNode?`.
++
+[source]
+----
+var heldObjectNode: SCNNode?
+----
++
+[source]
+----
+heldObjectNode = node
+----
+.. In der `placeItemButtonPressed`-Methode, entferne den `heldObjectNode` von der Kamera und füge ihn wieder an den `rootNode` der Szene hinzu.
++
+[source]
+----
+if heldObjectNode != nil {
+    heldObjectNode?.removeFromParentNode()
+    sceneView.scene.rootNode.addChildNode(heldObjectNode!)
+}
+----
+.. Da die `position` des `heldObjectNode` immer relativ zum aktuellen `parentNode` ist, und wir sie nicht explizit ändern, wird der Node nach dem Platzieren wieder auf die Ursprungsposition zurückgesetzt. Um dies zu vermeiden, können wir die aktuelle `worldTransform` (d.h., die aktuelle Position und Rotation zum Ursprung) speichern und als `transform` relativ zum `rootNode` verwenden. Nun sollte die Box nach dem Platzieren an ihrer ursprünglichen Position sitzen.
++
+[source]
+----
+if heldObjectNode != nil {
+    let transform = heldObjectNode!.worldTransform
+    heldObjectNode?.removeFromParentNode()
+    sceneView.scene.rootNode.addChildNode(heldObjectNode!)
+    heldObjectNode!.transform = transform
+}
+----
