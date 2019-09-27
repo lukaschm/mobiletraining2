@@ -18,8 +18,10 @@ class DroneViewController: UIViewController, ARSCNViewDelegate {
     
     var shipNode: SCNNode!
     
+    // We need to keep a reference to this because if it leaves scope, it is deactivated.
     var timer: Timer!
     
+    // How often to read from the joysticks.
     var updateTimeInterval = 1.0 / 30.0
     
     var worldNode: SCNNode?
@@ -110,7 +112,7 @@ class DroneViewController: UIViewController, ARSCNViewDelegate {
     func moveShip(){
         let forceScale: Float = 200 * Float(updateTimeInterval)
         shipNode.physicsBody!.applyTorque(
-            // That's a quarternion (I think - the documentation seems to think
+            // That's maybe a quarternion (I think - the documentation seems to think
             // this should be a SCNVector3)
             // Left joystick right/left controls the turning velocity.
             SCNVector4Make(0, -joystickLeft.value.0, 0, 1.0),
