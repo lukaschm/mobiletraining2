@@ -126,7 +126,24 @@ if heldObjectNode != nil {
 
 == Aufgabe 3: Nodes aufnehmen und bewegen
 
-. Wir wollen nun Nodes wieder aufnehmen und bewegen können. Als ersten Schritt sollen die Elemente markiert werden, die gerade im Zentrum des Bildschirms angezeigt werden. Um dies zu erreichen müssen wir die `renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval)` überschreiben.
+. Wir wollen nun Nodes wieder aufnehmen und bewegen können. Als ersten Schritt sollen die Elemente markiert werden, die gerade im Zentrum des Bildschirms angezeigt werden. 
+
+. Für die Interaktion müssen wir mehrere Attribute und Methoden am `BuilderViewController` erstellen:
+
+.. Erstelle analog zum `heldObjectNode` ein Attribut `targetedNode` im `BuilderViewController` für den Knoten, der gerade markiert wird.
+
+.. Um Knoten markieren zu können, müssen wir ihr Aussehen (`material`) verändern. Damit das Aussehen wieder zurückgesetzt werden kann, wenn der Knoten das Zentrum verlässt, speichern wir das alte `material`. Erstelle dafür ein Attribut `oldTargetMaterial: Any?`.
+
+.. Da die `renderer`-Methode nicht aus dem Haupt-UI-Thread, sondern aus einem Backgroundthread aufgerufen wird, dürfen wir darin nicht direkt auf die Views zugreifen. Erstelle deswegen für die Koordinaten des Zentrums der `sceneView` ein Attribut `sceneCenter: CGPoint!`. Implementiere außerdem `viewDidLayoutSubviews` wie folgt:
++
+[source]
+----
+override func viewDidLayoutSubviews() {
+    sceneCenter = sceneView.bounds.center
+}
+----
+
+. Um regelmäßig auf Änderungen in der Scene zu reagieren müssen wir die Methode `renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval)` überschreiben.
 +
 [source]
 ----
@@ -135,8 +152,104 @@ func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
 }
 ----
 
-. Erstelle 
+.. Setze als erstes das Material des Knotens zurück, falls wir gerade einen solchen halten:
++
+[source]
+----
+targetedNode?.geometry?.firstMaterial?.diffuse.contents = oldTargetMaterial
+----
 
+
+.. Suche zunächst einen Knoten, der im Zentrum der View liegt:
++
+[source]
+----
+let hitresults = renderer.hitTest(sceneCenter, options: nil)
+if let hitresult = hitresults.first {
+    ...
+----
+
+.. Speichere gegebenenfalls den Knoten im Attribut `targetedNode` und das Aussehen in `oldTargetMaterial`.
++
+[source]
+----
+if self.targetedNode != hitresult.node {
+    self.targetedNode = hitresult.node
+    self.oldTargetMaterial = self.targetedNode!.geometry!.firstMaterial!.diffuse.contents
+}
+----
+
+.. Markiere den Knoten rot:
++
+[source]
+----
+self.targetedNode!.geometry!.firstMaterial!.diffuse.contents = UIColor.red
+----
+
+.. Wenn kein Knoten im Zentrum sichtbar ist, wollen wir uns auch keinen merken. Setze deswegen das Attribut `targetedNode` zurück:
++
+[source]
+----
+} else {
+    targetedNode = nil
+}
+----
++
+NOTE: Objekte, die im Zentrum der View liegen, sollten jetzt rot markiert werden, und diese Markierung wieder verlieren.
+
+.. Der Button soll zum Aufnehmen des aktuellen `targetedNode` genutzt werden, wenn gerade kein Knoten zum Platzieren gehalten wird. Erweitere die Methode wie folgt:
++
+[source]
+----
+if heldObjectNode != nil {
+    // Previous implementation.
+} else {
+    // Pick up a node if we don't hold one currently.
+    if let targetedNode = targetedNode {
+        self.heldObjectNode = targetedNode
+
+        // This is analog to the placement case, but directly inverse.
+        targetedNode.transform = sceneView.pointOfView!.convertTransform(
+            targetedNode.transform,
+            from: worldNode)
+        targetedNode.removeFromParentNode()
+        sceneView.pointOfView!.addChildNode(targetedNode)
+    }
+}
+----
++
+NOTE: Wir nutzen hier denselben Ansatz wie vorher, damit der Knoten seine relative Position zur Kamera behält.
+
+.. Damit der Button die richtige Beschreibung zeigt, soll diese abhängig von der Belegung von `heldObjectNode` und `targetedNode` gesetzt werden. Erstelle eine Methode wie folgt:
++
+[source]
+----
+func updatePlaceItemButtonDescription(){
+    DispatchQueue.main.async {
+        self.placeItemButton.isEnabled = true
+        if self.heldObjectNode != nil {
+            self.placeItemButton.setTitle("Place Item", for: .normal)
+        } else if self.targetedNode != nil {
+            self.placeItemButton.setTitle("Pick Item", for: .normal)
+        } else {
+            self.placeItemButton.isEnabled = false
+        }
+    }
+}
+----
++
+NOTE: Der `DispatchQueue`-Call stellt sicher, dass die Änderung an der UI vom Haupt-Thread erfolgt.
+
+.. Füge eine `didSet`-Implementierung zu `heldObjectNode` und `targetedNode` hinzu, um nach Änderungen dieser Attribute die Methode aufzurufen:
++
+[source]
+----
+var targetedNode: SCNNode? {
+    didSet {
+        updatePlaceItemButtonDescription()
+    }
+}
+----
 
 == Aufgabe 4: Steuern eines Raumschiffs
 

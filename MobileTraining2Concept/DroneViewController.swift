@@ -81,6 +81,7 @@ class DroneViewController: UIViewController, ARSCNViewDelegate {
     }
     
     func findAndAdjustShip(){
+        // Find our ship
         shipNode = sceneView.scene.rootNode.childNode(withName: "ship", recursively: false)
         shipNode.position = SCNVector3(0, 0, -1)
         shipNode.physicsBody = SCNPhysicsBody(type: .dynamic, shape: SCNPhysicsShape(geometry: SCNSphere(radius: 0.5), options: nil))

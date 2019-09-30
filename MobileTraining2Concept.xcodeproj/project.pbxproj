@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		B240EC0722F413B50057548A /* BuilderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B240EC0622F413B50057548A /* BuilderViewController.swift */; };
 		B240EC0922F420860057548A /* target.png in Resources */ = {isa = PBXBuildFile; fileRef = B240EC0822F420860057548A /* target.png */; };
-		B2881985232B8CD40086CFF9 /* NewJoystick.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2881984232B8CD40086CFF9 /* NewJoystick.swift */; };
+		B25E1FA42341F425009A8212 /* CombinedViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B25E1FA32341F425009A8212 /* CombinedViewController.swift */; };
 		B2A8E59E22F2D9F700365603 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A8E59D22F2D9F700365603 /* AppDelegate.swift */; };
 		B2A8E5A022F2D9F700365603 /* art.scnassets in Resources */ = {isa = PBXBuildFile; fileRef = B2A8E59F22F2D9F700365603 /* art.scnassets */; };
 		B2A8E5A222F2D9F700365603 /* DroneViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2A8E5A122F2D9F700365603 /* DroneViewController.swift */; };
@@ -41,7 +41,7 @@
 /* Begin PBXFileReference section */
 		B240EC0622F413B50057548A /* BuilderViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BuilderViewController.swift; sourceTree = "<group>"; };
 		B240EC0822F420860057548A /* target.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = target.png; sourceTree = "<group>"; };
-		B2881984232B8CD40086CFF9 /* NewJoystick.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewJoystick.swift; sourceTree = "<group>"; };
+		B25E1FA32341F425009A8212 /* CombinedViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CombinedViewController.swift; sourceTree = "<group>"; };
 		B2A8E59A22F2D9F700365603 /* MobileTraining2Concept.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MobileTraining2Concept.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B2A8E59D22F2D9F700365603 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B2A8E59F22F2D9F700365603 /* art.scnassets */ = {isa = PBXFileReference; lastKnownFileType = wrapper.scnassets; path = art.scnassets; sourceTree = "<group>"; };
@@ -111,8 +111,8 @@
 				B2A8E59F22F2D9F700365603 /* art.scnassets */,
 				B2A8E5A122F2D9F700365603 /* DroneViewController.swift */,
 				B240EC0622F413B50057548A /* BuilderViewController.swift */,
+				B25E1FA32341F425009A8212 /* CombinedViewController.swift */,
 				B2A8E5CD22F2EBFB00365603 /* JoystickView.swift */,
-				B2881984232B8CD40086CFF9 /* NewJoystick.swift */,
 				B2A8E5A322F2D9F800365603 /* Main.storyboard */,
 				B2A8E5A622F2D9FB00365603 /* Assets.xcassets */,
 				B2A8E5A822F2D9FB00365603 /* LaunchScreen.storyboard */,
@@ -273,9 +273,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B2881985232B8CD40086CFF9 /* NewJoystick.swift in Sources */,
 				B240EC0722F413B50057548A /* BuilderViewController.swift in Sources */,
 				B2A8E5A222F2D9F700365603 /* DroneViewController.swift in Sources */,
+				B25E1FA42341F425009A8212 /* CombinedViewController.swift in Sources */,
 				B2A8E59E22F2D9F700365603 /* AppDelegate.swift in Sources */,
 				B2A8E5CE22F2EBFB00365603 /* JoystickView.swift in Sources */,
 			);
